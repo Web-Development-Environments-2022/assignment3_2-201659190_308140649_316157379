@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const recipes_utils = require("./utils/recipes_utils");
+const search_utils = require("./utils/search_utils");
 
 router.get("/", (req, res) => res.send("im here"));
 
@@ -8,6 +9,24 @@ router.get("/", (req, res) => res.send("im here"));
 /**
  * This path returns a full details of a recipe by its id
  */
+ router.get("/search", async (req, res, next) => {
+  try{
+    search_params = req.query;
+    search_params.instructionsRequired = true;
+    search_params.apiKey = process.env.spooncular_apiKey;
+  
+    let search_results = await search_utils.search_recipes(search_params)
+    res.send(search_results);
+  } catch (error) {
+    next(error);
+  }
+  
+ 
+
+  
+});
+
+
 router.get("/:recipeId", async (req, res, next) => {
   try {
     const recipe = await recipes_utils.getRecipeDetails(req.params.recipeId);
@@ -16,5 +35,9 @@ router.get("/:recipeId", async (req, res, next) => {
     next(error);
   }
 });
+
+
+
+
 
 module.exports = router;
