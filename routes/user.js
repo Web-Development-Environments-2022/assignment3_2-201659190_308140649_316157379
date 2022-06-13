@@ -52,6 +52,68 @@ router.get('/favorites', async (req,res,next) => {
   }
 });
 
+router.post('/my_recipes',async(req,res,next) =>{
+  try {
+    if( req.body.title == undefined||
+      req.body.imageRecipe == undefined || req.body.readyInMinutes == undefined||
+       req.body.aggregateLikes==undefined || req.body.vegan == undefined|| 
+       req.body.vegetarian == undefined || req.body.glutenFree == undefined || 
+       req.body.ingredients == undefined || req.body.instructions == undefined){
+        throw {status: 400, message: "one of the argument is not specified."}
+       }
+    const user_id = req.session.user_id;
+    let new_recipe_id =await user_utils.get_new_recipe_id(user_id); 
+    let recipe_details= 
+      {user_id : user_id,
+      recipe_id : new_recipe_id,
+      title : req.body.title,
+      imageRecipe : req.body.imageRecipe,
+      readyInMinutes : req.body.readyInMinutes ,
+      aggregateLikes : req.body.aggregateLikes,
+      vegan : req.body.vegan,
+      vegetarian : req.body.vegetarian,
+      glutenFree : req.body.glutenFree
+    }
+    let ingredients = req.body.ingredients
+    let instructions = req.body.instructions
+    await create_new_recipe(recipe_details, ingredients,  instructions) 
+    res.status(201).send({message: "recipe created", success: true })
+  } catch (error) {
+    next(error); 
+  }
+})
+
+async function create_new_recipe(recipe, ingredients,  instructions){
+  try {
+    let recipe_id = await recipe_utils.createRecipe(recipe);
+
+    if (recipe_id == undefined){
+      throw{status: 400, message: "cant create recipe"};
+    }
+    await addIngredients(recipe.recipe_id,ingredients) ;
+    await addinstructions(recipe.recipe_id,instructions);
+  } catch (error) {
+    throw{status: 400, message: message}
+  }
+}
+function addIngredients(id, ingredients) {
+  ingredients.map((ingredient) =>  recipe_utils.addIngredientToRecipe(id, ingredient));
+}
+
+function addinstructions(id, ingredients) {
+  ingredients.map((ingredient) =>  recipe_utils.addIngredientToRecipe(id, ingredient));
+}
+function booliantoBinary(boolean) {
+  if (boolean == true) {
+    return 1;
+  } else if (boolean == false) {
+    return 0;
+  } else {
+    new Error("not valid boolean argument (not 0 or 1)");
+  }
+}
+
+
 
 
 

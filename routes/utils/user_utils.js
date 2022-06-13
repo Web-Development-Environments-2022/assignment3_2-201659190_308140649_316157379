@@ -9,7 +9,13 @@ async function getFavoriteRecipes(user_id){
     return recipes_id;
 }
 
+async function get_new_recipe_id(user_id) {
+    let num_user_recipe =  await DButils.execQuery(`select count(recipe_id) as counter from newrecipes where user_id = ${user_id}`)
+    return num_user_recipe[0].counter + 1
+}
+
 
 
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
+exports.get_new_recipe_id = get_new_recipe_id;

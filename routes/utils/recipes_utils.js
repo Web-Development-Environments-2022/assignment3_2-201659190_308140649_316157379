@@ -18,6 +18,30 @@ async function getRecipeInformation(recipe_id) {
     });
 }
 
+async function createRecipe(recipe){
+
+    await DButils.execQuery(
+        `INSERT INTO newrecipes (title, imageRecipe, readyInMinutes, aggregateLikes, vegan, vegetarian,
+            glutenFree, isWatched,isFavorite, user_id ,recipe_id)
+        VALUES ('${recipe.title}', '${recipe.imageRecipe}',${recipe.readyInMinutes},
+        ${recipe.aggregateLikes}, ${recipe.vegan}, ${recipe.vegetarian},${recipe.glutenFree},
+         ${false}, ${false},${recipe.user_id}, '${recipe.recipe_id}')`);
+}
+
+
+async function addIngredientToRecipe(recipe_id,ingredient) {
+    await DButils.execQuery(
+        `INSERT INTO recipeingrediants (recipe_id, name, amount, measure)
+        VALUES ('${recipe_id}', '${ingredient.name}',${ingredient.amount}, '${ingredient.measure}')`);
+    }
+async function addinstructionToRecipe(recipe_id,instruction) {
+        await DButils.execQuery(
+            `INSERT INTO recipeingrediants (recipe_id, stage, instruction)
+            VALUES ('${recipe_id}', ${instruction.name},${instruction.instruction})`);
+    }
+
+
+
 
 
 async function getRecipeDetails(recipe_id) {
@@ -39,7 +63,11 @@ async function getRecipeDetails(recipe_id) {
 
 
 
+
+exports.addIngredientToRecipe = addIngredientToRecipe
+exports.addinstructionToRecipe = addinstructionToRecipe 
 exports.getRecipeDetails = getRecipeDetails;
+exports.createRecipe= createRecipe
 
 
 
