@@ -10,8 +10,8 @@ servers:
 # - url: "http://132.73.84.144"
   description: SwaggerHub API Auto Mocking hey
 tags:
-  - name: Recepies
-    description:  Recepies
+  - name: Recipes
+    description:  Recipes
   - name: Auth
     description: Users Authentication 
   - name: Users
@@ -81,10 +81,10 @@ paths:
         "401":
           description: logged in is required.
   
-  /recepies:
+  /recpies:
     get:
       tags:
-        - Recepies
+        - Recipes
       summary: get main 3 recipes page
       description: get 3 different random recipes - user isn't logged in
       responses:
@@ -103,7 +103,7 @@ paths:
                 uniqueItems: true
         '404':
           description: there are no 3 recipes to return
-  /users/recepies:
+  /users/recipes:
     get:
       tags:
         - Users
@@ -148,10 +148,10 @@ paths:
           description: recipe has been successfuly added to the user's last watched array
         "404":
           description: couldnt find username or recipeId
-  /recepies/{recipe_id}:   
+  /recipes/{recipe_id}:   
     get:
       tags:
-        - Recepies
+        - Recipes
       summary: get recipe page by recipe Id
       description: get from server a recipe and its content by recipe Id
       
@@ -278,10 +278,10 @@ paths:
                  
         "400":
           description: "invalid category name"
-  /recepies/esearch:
+  /recipes/search:
     get:
       tags: 
-        - Recepies
+        - Recipes
       summary: search_by_name 
       description: search for recipes based on partial or full {name_query} 
       parameters: 
