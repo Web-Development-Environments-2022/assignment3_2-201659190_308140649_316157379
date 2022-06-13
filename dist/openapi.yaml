@@ -286,31 +286,31 @@ paths:
       description: search for recipes based on partial or full {name_query} 
       parameters: 
       - name: query
-        in: param
+        in: query
         required: true
         schema:
           type: string
       - name: number
-        in: param
+        in: query
         required: true
         schema:
-          type: int
+          type: integer
       - name: cusine
-        in: param
+        in: query
         required: false
         style: form
         explode: true
         schema:
           $ref: '#/components/schemas/Cusine'
       - name: diet
-        in: param
+        in: query
         required: false
         style: form
         explode: true
         schema:
           $ref: '#/components/schemas/Diet'
       - name: intolerances 
-        in: param
+        in: query
         required: false
         style: form
         explode: true
