@@ -82,37 +82,20 @@ async function getRecipesPreview(recipes_array) {
             apiKey: process.env.spooncular_apiKey
         }
     });
-    let recipes_arr = [];
-    for (i = 0; i < recipes.data.length; i++)
-    {
-        let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipes.data[i];
-        recipes_arr.push({
-            id: id,
-        title: title,
-        readyInMinutes: readyInMinutes,
-        image: image,
-        popularity: aggregateLikes,
-        vegan: vegan,
-        vegetarian: vegetarian,
-        glutenFree: glutenFree
-        })
+    return recipes.data.map((element) => {
+        const { id, title, readyInMinutes, aggregateLikes, vegetarian, vegan, glutenFree, image } = element;
+        return {
+          id: id,
+          title: title,
+          readyInMinutes: readyInMinutes,
+          aggregateLikes: aggregateLikes,
+          vegetarian: vegetarian,
+          vegan: vegan,
+          glutenFree: glutenFree,
+          image: image,
+        };
+      });
     }
-    return recipes_arr
-    // }
-    // let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipes.data;
-
-    // return {
-    //     id: id,
-    //     title: title,
-    //     readyInMinutes: readyInMinutes,
-    //     image: image,
-    //     popularity: aggregateLikes,
-    //     vegan: vegan,
-    //     vegetarian: vegetarian,
-    //     glutenFree: glutenFree,
-        
-    // }
-}
 
 exports.getRecipesPreview = getRecipesPreview
 exports.addIngredientToRecipe = addIngredientToRecipe
