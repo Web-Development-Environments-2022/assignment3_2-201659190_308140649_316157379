@@ -92,17 +92,17 @@ async function create_new_recipe(recipe, ingredients,  instructions){
   try {
     await recipe_utils.createRecipe(recipe);
     await addIngredients(recipe.recipe_id,ingredients) ;
-    await addinstructions(recipe.recipe_id,instructions);
+    await addInstructions(recipe.recipe_id,instructions);
   } catch (error) {
     throw{status: 400, message: error}
   }
 }
 function addIngredients(id, ingredients) {
-  ingredients.map((ingredient) =>  recipe_utils.addIngredientToRecipe(id, ingredient));
+   ingredients.map((ingredient) =>  recipe_utils.addIngredientToRecipe(id, ingredient));
 }
 
-function addinstructions(id, ingredients) {
-  ingredients.map((ingredient) =>  recipe_utils.addIngredientToRecipe(id, ingredient));
+function addInstructions(id, instructions) {
+   instructions.map((instruction) =>  recipe_utils.addInstructionToRecipe(id, instruction));
 }
 function booliantoBinary(boolean) {
   if (boolean == "true") {
