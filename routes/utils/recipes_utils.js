@@ -38,6 +38,8 @@ async function getInformationBulk(recipes_array){
         }
     });
 }
+
+
 async function createRecipe(recipe){
     // readyInMinuteInt = await parseInt(recipe.readyInMinutes);
     // aggregateLikesInt = await parseInt(recipe.aggregateLikes);
@@ -61,48 +63,7 @@ async function createRecipe(recipe){
     // }
     // return extract
 
-async function previewRecipeDetailsArray(resipes){
-    return recipes.data.map((element) => {
-        const { id, title, readyInMinutes, aggregateLikes, vegetarian, vegan, glutenFree, image } = element;
-        return {
-          id: id,
-          title: title,
-          readyInMinutes: readyInMinutes,
-          aggregateLikes: aggregateLikes,
-          vegetarian: vegetarian,
-          vegan: vegan,
-          glutenFree: glutenFree,
-          image: image,
-        };
-      });
-    // return resipe.map((resipe) =>{
-    //     let data = resipe;
-    //     if (resipe.data) {
-    //         data = resipe.data
-    //     }
-    //     const {
-    //         id,
-    //         title,
-    //         readyInMinutes,
-    //         image,
-    //         popularity,
-    //         vegan,
-    //         vegetarian,
-    //         glutenFree,
-    //     } = data
-    //     return{
-    //         id: id,
-    //         title: title,
-    //         readyInMinutes: readyInMinutes,
-    //         image: image,
-    //         popularity: aggregateLikes,
-    //         vegan: vegan,
-    //         vegetarian: vegetarian,
-    //         glutenFree: glutenFree,
-    //     }
-    // }
-    // )
-}
+
 
 async function addIngredientToRecipe(recipe_id,ingredient) {
     await DButils.execQuery(
@@ -132,11 +93,6 @@ async function getRecipeDetails(recipe_id) {
         
     }
 }
-async function getThreeRandomRecipes(){
-    let random = await getRandomRecipes();
-    // let 
-    
-}
 
 async function recipePattern(array)
 {
@@ -154,17 +110,11 @@ async function recipePattern(array)
         };
       });
 }
-
-
-async function getInformationBulk(recipes_array){
-    return await axios.get(`${api_domain}/informationBulk?ids=${recipes_array}`, {
-        params: {
-            includeNutrition: false,
-            apiKey: process.env.spooncular_apiKey
-        }
-    });
+async function getThreeRandomRecipes(){
+    let random = await getRandomRecipes();
+    return recipePattern(random.data.recipes)
+    
 }
-
 
 async function getRecipesPreview(recipes_array) {
     if (recipes_array.length == 0){
