@@ -35,23 +35,6 @@ router.post('/favorites', async (req,res,next) => {
   }
 })
 
-/**
- * This path returns the favorites recipes that were saved by the logged-in user
- */
-router.get('/favorites', async (req,res,next) => {
-  try{
-    const user_id = req.session.user_id;
-    let favorite_recipes = {};
-    const recipes_id = await user_utils.getFavoriteRecipes(user_id);
-    let recipes_id_array = [];
-    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
-    res.status(200).send(results);
-  } catch(error){
-    next(error); 
-  }
-});
-
 router.post('/my_recipes',async(req,res,next) =>{
   try {
     if( req.body.title == undefined||
@@ -70,9 +53,9 @@ router.post('/my_recipes',async(req,res,next) =>{
       imageRecipe : req.body.imageRecipe,
       readyInMinutes : req.body.readyInMinutes ,
       aggregateLikes : req.body.aggregateLikes,
-      vegan : req.body.vegan,
-      vegetarian : req.body.vegetarian,
-      glutenFree : req.body.glutenFree
+      vegan : await booliantoBinary(req.body.vegan),
+      vegetarian : await booliantoBinary(req.body.vegetarian),
+      glutenFree : await booliantoBinary(req.body.glutenFree)
     }
     let ingredients = req.body.ingredients
     let instructions = req.body.instructions
@@ -83,17 +66,35 @@ router.post('/my_recipes',async(req,res,next) =>{
   }
 })
 
-async function create_new_recipe(recipe, ingredients,  instructions){
-  try {
-    let recipe_id = await recipe_utils.createRecipe(recipe);
+/**
+ * This path returns the favorites recipes that were saved by the logged-in user
+ */
+router.get('/favorites', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    let favorite_recipes = {};
+    const recipes_id = await user_utils.getFavoriteRecipes(user_id);
+    let recipes_id_array = [];
+    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
+    res.status(200).send(results);
+  } catch(error){
+    next(error); 
+  }
+});
 
-    if (recipe_id == undefined){
-      throw{status: 400, message: "cant create recipe"};
-    }
+
+
+async function create_new_recipe(recipe, ingredients,  instructions){
+  if (recipe.recipe_id == undefined){
+    throw{status: 400, message: "cant create recipe"};
+  }
+  try {
+    await recipe_utils.createRecipe(recipe);
     await addIngredients(recipe.recipe_id,ingredients) ;
     await addinstructions(recipe.recipe_id,instructions);
   } catch (error) {
-    throw{status: 400, message: message}
+    throw{status: 400, message: error}
   }
 }
 function addIngredients(id, ingredients) {
@@ -104,9 +105,9 @@ function addinstructions(id, ingredients) {
   ingredients.map((ingredient) =>  recipe_utils.addIngredientToRecipe(id, ingredient));
 }
 function booliantoBinary(boolean) {
-  if (boolean == true) {
+  if (boolean == "true") {
     return 1;
-  } else if (boolean == false) {
+  } else if (boolean == "false") {
     return 0;
   } else {
     new Error("not valid boolean argument (not 0 or 1)");

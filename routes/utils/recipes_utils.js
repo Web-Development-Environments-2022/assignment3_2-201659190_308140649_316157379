@@ -1,4 +1,5 @@
 const axios = require("axios");
+const DButils = require("./DButils");
 const api_domain = "https://api.spoonacular.com/recipes";
 
 
@@ -19,13 +20,22 @@ async function getRecipeInformation(recipe_id) {
 }
 
 async function createRecipe(recipe){
+    // readyInMinuteInt = await parseInt(recipe.readyInMinutes);
+    // aggregateLikesInt = await parseInt(recipe.aggregateLikes);
+    isWatchedInt = 0;
+    isFavoriteInt = 0;
+    // user_idInt = await parseInt(recipe.user_id);
+    // recipe_idInt = await parseInt(recipe.recipe_id);
+
 
     await DButils.execQuery(
         `INSERT INTO newrecipes (title, imageRecipe, readyInMinutes, aggregateLikes, vegan, vegetarian,
             glutenFree, isWatched,isFavorite, user_id ,recipe_id)
         VALUES ('${recipe.title}', '${recipe.imageRecipe}',${recipe.readyInMinutes},
         ${recipe.aggregateLikes}, ${recipe.vegan}, ${recipe.vegetarian},${recipe.glutenFree},
-         ${false}, ${false},${recipe.user_id}, '${recipe.recipe_id}')`);
+         ${isWatchedInt}, ${isFavoriteInt},${recipe.user_id}, ${recipe.recipe_id})`);
+
+    return recipe.recipe_id
 }
 
 
@@ -62,8 +72,49 @@ async function getRecipeDetails(recipe_id) {
 }
 
 
+async function getRecipesPreview(recipes_array) {
+    if (recipes_array.length == 0){
+        return {}
+    }
+    let recipes = await axios.get(`${api_domain}/informationBulk?ids=${recipes_array}`, {
+        params: {
+            includeNutrition: false,
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
+    let recipes_arr = [];
+    for (i = 0; i < recipes.data.length; i++)
+    {
+        let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipes.data[i];
+        recipes_arr.push({
+            id: id,
+        title: title,
+        readyInMinutes: readyInMinutes,
+        image: image,
+        popularity: aggregateLikes,
+        vegan: vegan,
+        vegetarian: vegetarian,
+        glutenFree: glutenFree
+        })
+    }
+    return recipes_arr
+    // }
+    // let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipes.data;
 
+    // return {
+    //     id: id,
+    //     title: title,
+    //     readyInMinutes: readyInMinutes,
+    //     image: image,
+    //     popularity: aggregateLikes,
+    //     vegan: vegan,
+    //     vegetarian: vegetarian,
+    //     glutenFree: glutenFree,
+        
+    // }
+}
 
+exports.getRecipesPreview = getRecipesPreview
 exports.addIngredientToRecipe = addIngredientToRecipe
 exports.addinstructionToRecipe = addinstructionToRecipe 
 exports.getRecipeDetails = getRecipeDetails;
