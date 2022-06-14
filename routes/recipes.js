@@ -21,12 +21,20 @@ router.get("/", (req, res) => res.send("im here"));
     res.send(search_results);
   } catch (error) {
     next(error);
-  }
-  
- 
-
-  
+  }  
 });
+  /**
+ * This path returns the 3 random  recipes 
+ */
+router.get('/random', async (req,res,next) => {
+    try{
+
+      let recipes_random = await recipes_utils.getThreeRandomRecipes();
+      res.status(200).send(recipes_random);
+    } catch(error){
+      next(error); 
+    }
+  });
 
 
 router.get("/:recipeId", async (req, res, next) => {

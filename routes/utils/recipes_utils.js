@@ -17,6 +17,27 @@ async function getRecipeInformation(recipe_id) {
     });
 }
 
+async function getRandomRecipes() {
+    const res = await axios.get(`${api_domain}/random`, {
+        params: {
+            number : 3,
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
+    return res
+}
+
+
+async function getInformationBulk(recipes_array){
+    return await axios.get(`${api_domain}/informationBulk?ids=${recipes_array}`, {
+        params: {
+            includeNutrition: false,
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
+}
+
+
 async function createRecipe(recipe){
     isWatchedInt = 0;
     isFavoriteInt = 0;
@@ -28,7 +49,6 @@ async function createRecipe(recipe){
          '${isWatchedInt}', '${isFavoriteInt}', '${recipe.user_id}', '${recipe.recipe_id}')`);
 }
 
-
 async function addIngredientToRecipe(recipe_id,ingredient) {
     await DButils.execQuery(
         `INSERT INTO recipeingrediants (recipe_id, name, amount, measure)
@@ -39,9 +59,6 @@ async function addInstructionToRecipe(recipe_id,instruction) {
             `INSERT INTO recipeinstructions (recipe_id, stage, instruction)
             VALUES ('${recipe_id}', '${instruction.stage}', '${instruction.instruction}')`);
     }
-
-
-
 
 
 async function getRecipeDetails(recipe_id) {
@@ -77,17 +94,11 @@ async function recipePattern(array)
         };
       });
 }
-
-
-async function getInformationBulk(recipes_array){
-    return await axios.get(`${api_domain}/informationBulk?ids=${recipes_array}`, {
-        params: {
-            includeNutrition: false,
-            apiKey: process.env.spooncular_apiKey
-        }
-    });
+async function getThreeRandomRecipes(){
+    let random = await getRandomRecipes();
+    return recipePattern(random.data.recipes)
+    
 }
-
 
 async function getRecipesPreview(recipes_array) {
     if (recipes_array.length == 0){
@@ -97,11 +108,13 @@ async function getRecipesPreview(recipes_array) {
     return recipePattern(recipes.data);
     }
 
+exports.createRecipe= createRecipe
 exports.getRecipesPreview = getRecipesPreview
 exports.addIngredientToRecipe = addIngredientToRecipe
 exports.addInstructionToRecipe = addInstructionToRecipe 
 exports.getRecipeDetails = getRecipeDetails;
-exports.createRecipe= createRecipe
+exports.getThreeRandomRecipes = getThreeRandomRecipes;
+
 
 
 
