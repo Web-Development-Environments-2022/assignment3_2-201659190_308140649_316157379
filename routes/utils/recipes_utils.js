@@ -19,43 +19,25 @@ async function getRecipeInformation(recipe_id) {
     });
 }
 
-<<<<<<< HEAD
 async function getRandomRecipes() {
     const res = await axios.get(`${api_domain}/random`, {
         params: {
-            number : 2,
+            number : 3,
             apiKey: process.env.spooncular_apiKey
         }
     });
     return res
 }
-async function getThreeRandomRecipes(){
-    let random = await getRandomRecipes()
-    let a = { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree }
-    a = random.data.recipes[0];
-    return a
-        // id: id,
-        // title: title,
-        // readyInMinutes: readyInMinutes,
-        // image: image,
-        // popularity: aggregateLikes,
-        // vegan: vegan,
-        // vegetarian: vegetarian,
-        // glutenFree: glutenFree,
-        
-    
 
 
-    // let filter_random_pool = random_pool.data.recipes.filter((random) => (random.instructions != ""))
-    // if (filter_random_pool.length < 3) {
-    //     return getThreeRandomRecipes();
-    // }
-    // return extract
-
-      
-
+async function getInformationBulk(recipes_array){
+    return await axios.get(`${api_domain}/informationBulk?ids=${recipes_array}`, {
+        params: {
+            includeNutrition: false,
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
 }
-=======
 async function createRecipe(recipe){
     // readyInMinuteInt = await parseInt(recipe.readyInMinutes);
     // aggregateLikesInt = await parseInt(recipe.aggregateLikes);
@@ -73,6 +55,54 @@ async function createRecipe(recipe){
          '${isWatchedInt}', '${isFavoriteInt}', '${recipe.user_id}', '${recipe.recipe_id}')`);
 }
 
+    // let filter_random_pool = random_pool.data.recipes.filter((random) => (random.instructions != ""))
+    // if (filter_random_pool.length < 3) {
+    //     return getThreeRandomRecipes();
+    // }
+    // return extract
+
+async function previewRecipeDetailsArray(resipes){
+    return recipes.data.map((element) => {
+        const { id, title, readyInMinutes, aggregateLikes, vegetarian, vegan, glutenFree, image } = element;
+        return {
+          id: id,
+          title: title,
+          readyInMinutes: readyInMinutes,
+          aggregateLikes: aggregateLikes,
+          vegetarian: vegetarian,
+          vegan: vegan,
+          glutenFree: glutenFree,
+          image: image,
+        };
+      });
+    // return resipe.map((resipe) =>{
+    //     let data = resipe;
+    //     if (resipe.data) {
+    //         data = resipe.data
+    //     }
+    //     const {
+    //         id,
+    //         title,
+    //         readyInMinutes,
+    //         image,
+    //         popularity,
+    //         vegan,
+    //         vegetarian,
+    //         glutenFree,
+    //     } = data
+    //     return{
+    //         id: id,
+    //         title: title,
+    //         readyInMinutes: readyInMinutes,
+    //         image: image,
+    //         popularity: aggregateLikes,
+    //         vegan: vegan,
+    //         vegetarian: vegetarian,
+    //         glutenFree: glutenFree,
+    //     }
+    // }
+    // )
+}
 
 async function addIngredientToRecipe(recipe_id,ingredient) {
     await DButils.execQuery(
@@ -84,10 +114,6 @@ async function addInstructionToRecipe(recipe_id,instruction) {
             `INSERT INTO recipeinstructions (recipe_id, stage, instruction)
             VALUES ('${recipe_id}', '${instruction.stage}',${instruction.instruction})`);
     }
-
-
-
->>>>>>> a3d90e0405ff7a26ae6c87de666c9b885ebbcc52
 
 
 async function getRecipeDetails(recipe_id) {
@@ -106,42 +132,28 @@ async function getRecipeDetails(recipe_id) {
         
     }
 }
+async function getThreeRandomRecipes(){
+    let random = await getRandomRecipes();
+    // let 
+    
+}
 
 
 async function getRecipesPreview(recipes_array) {
     if (recipes_array.length == 0){
         return {}
     }
-    let recipes = await axios.get(`${api_domain}/informationBulk?ids=${recipes_array}`, {
-        params: {
-            includeNutrition: false,
-            apiKey: process.env.spooncular_apiKey
-        }
-    });
-    return recipes.data.map((element) => {
-        const { id, title, readyInMinutes, aggregateLikes, vegetarian, vegan, glutenFree, image } = element;
-        return {
-          id: id,
-          title: title,
-          readyInMinutes: readyInMinutes,
-          aggregateLikes: aggregateLikes,
-          vegetarian: vegetarian,
-          vegan: vegan,
-          glutenFree: glutenFree,
-          image: image,
-        };
-      });
-    }
+    let recipes = await getInformationBulk(recipes_array)
+    return previewRecipeDetailsArray(recipes.data)
 
+    }
+exports.createRecipe= createRecipe
 exports.getRecipesPreview = getRecipesPreview
 exports.addIngredientToRecipe = addIngredientToRecipe
 exports.addInstructionToRecipe = addInstructionToRecipe 
 exports.getRecipeDetails = getRecipeDetails;
-<<<<<<< HEAD
 exports.getThreeRandomRecipes = getThreeRandomRecipes;
-=======
-exports.createRecipe= createRecipe
->>>>>>> a3d90e0405ff7a26ae6c87de666c9b885ebbcc52
+
 
 
 
