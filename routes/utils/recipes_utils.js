@@ -69,18 +69,9 @@ async function getRecipeDetails(recipe_id) {
     }
 }
 
-
-async function getRecipesPreview(recipes_array) {
-    if (recipes_array.length == 0){
-        return {}
-    }
-    let recipes = await axios.get(`${api_domain}/informationBulk?ids=${recipes_array}`, {
-        params: {
-            includeNutrition: false,
-            apiKey: process.env.spooncular_apiKey
-        }
-    });
-    return recipes.data.map((element) => {
+async function recipePattern(array)
+{
+    return array.map((element) => {
         const { id, title, readyInMinutes, aggregateLikes, vegetarian, vegan, glutenFree, image } = element;
         return {
           id: id,
@@ -93,6 +84,25 @@ async function getRecipesPreview(recipes_array) {
           image: image,
         };
       });
+}
+
+
+async function getInformationBulk(recipes_array){
+    return await axios.get(`${api_domain}/informationBulk?ids=${recipes_array}`, {
+        params: {
+            includeNutrition: false,
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
+}
+
+
+async function getRecipesPreview(recipes_array) {
+    if (recipes_array.length == 0){
+        return {}
+    }
+    let recipes = await getInformationBulk(recipes_array);
+    return recipePattern(recipes.data);
     }
 
 exports.getRecipesPreview = getRecipesPreview
