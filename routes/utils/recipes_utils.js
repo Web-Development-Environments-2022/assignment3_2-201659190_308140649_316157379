@@ -57,14 +57,6 @@ async function createRecipe(recipe){
          '${isWatchedInt}', '${isFavoriteInt}', '${recipe.user_id}', '${recipe.recipe_id}')`);
 }
 
-    // let filter_random_pool = random_pool.data.recipes.filter((random) => (random.instructions != ""))
-    // if (filter_random_pool.length < 3) {
-    //     return getThreeRandomRecipes();
-    // }
-    // return extract
-
-
-
 async function addIngredientToRecipe(recipe_id,ingredient) {
     await DButils.execQuery(
         `INSERT INTO recipeingrediants (recipe_id, name, amount, measure)
