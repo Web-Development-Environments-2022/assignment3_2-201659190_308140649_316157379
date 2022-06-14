@@ -57,10 +57,10 @@ router.post('/my_recipes',async(req,res,next) =>{
       vegetarian : await booliantoBinary(req.body.vegetarian),
       glutenFree : await booliantoBinary(req.body.glutenFree)
     }
-    let ingredients = req.body.ingredients
-    let instructions = req.body.instructions
-    await create_new_recipe(recipe_details, ingredients,  instructions) 
-    res.status(201).send({message: "recipe created", success: true })
+    let ingredients = req.body.ingredients;
+    let instructions = req.body.instructions;
+    await create_new_recipe(recipe_details, ingredients,  instructions) ;
+    res.status(201).send({message: "recipe created", success: true });
   } catch (error) {
     next(error); 
   }
@@ -72,8 +72,21 @@ router.post('/my_recipes',async(req,res,next) =>{
 router.get('/favorites', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
-    let favorite_recipes = {};
     const recipes_id = await user_utils.getFavoriteRecipes(user_id);
+    let recipes_id_array = [];
+    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
+    res.status(200).send(results);
+  } catch(error){
+    next(error); 
+  }
+});
+
+
+router.get('/family_recipe', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    const recipes_id = await user_utils.getFamilyRecipes(user_id);
     let recipes_id_array = [];
     recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
     const results = await recipe_utils.getRecipesPreview(recipes_id_array);
@@ -97,12 +110,12 @@ async function create_new_recipe(recipe, ingredients,  instructions){
     throw{status: 400, message: error}
   }
 }
-function addIngredients(id, ingredients) {
-   ingredients.map((ingredient) =>  recipe_utils.addIngredientToRecipe(id, ingredient));
+async function addIngredients(id, ingredients) {
+  await ingredients.map((ingredient) =>  recipe_utils.addIngredientToRecipe(id, ingredient));
 }
 
-function addInstructions(id, instructions) {
-   instructions.map((instruction) =>  recipe_utils.addInstructionToRecipe(id, instruction));
+async function addInstructions(id, instructions) {
+  await instructions.map((instruction) =>  recipe_utils.addInstructionToRecipe(id, instruction));
 }
 function booliantoBinary(boolean) {
   if (boolean == "true") {

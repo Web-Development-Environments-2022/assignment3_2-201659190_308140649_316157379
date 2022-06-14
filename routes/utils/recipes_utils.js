@@ -8,8 +8,6 @@ const api_domain = "https://api.spoonacular.com/recipes";
  * Get recipes list from spooncular response and extract the relevant recipe data for preview
  * @param {*} recipes_info 
  */
-
-
 async function getRecipeInformation(recipe_id) {
     return await axios.get(`${api_domain}/${recipe_id}/information`, {
         params: {
@@ -20,14 +18,8 @@ async function getRecipeInformation(recipe_id) {
 }
 
 async function createRecipe(recipe){
-    // readyInMinuteInt = await parseInt(recipe.readyInMinutes);
-    // aggregateLikesInt = await parseInt(recipe.aggregateLikes);
     isWatchedInt = 0;
     isFavoriteInt = 0;
-    // user_idInt = await parseInt(recipe.user_id);
-    // recipe_idInt = await parseInt(recipe.recipe_id);
-
-
     await DButils.execQuery(
         `INSERT INTO newrecipes (title, imageRecipe, readyInMinutes, aggregateLikes, vegan, vegetarian,
             glutenFree, isWatched,isFavorite, user_id ,recipe_id)
@@ -40,12 +32,12 @@ async function createRecipe(recipe){
 async function addIngredientToRecipe(recipe_id,ingredient) {
     await DButils.execQuery(
         `INSERT INTO recipeingrediants (recipe_id, name, amount, measure)
-        VALUES ('${recipe_id}', '${ingredient.name}',${ingredient.amount}, '${ingredient.measure}')`);
+        VALUES ('${recipe_id}', '${ingredient.name}', '${ingredient.amount}', '${ingredient.measure}')`);
     }
 async function addInstructionToRecipe(recipe_id,instruction) {
         await DButils.execQuery(
             `INSERT INTO recipeinstructions (recipe_id, stage, instruction)
-            VALUES ('${recipe_id}', '${instruction.stage}',${instruction.instruction})`);
+            VALUES ('${recipe_id}', '${instruction.stage}', '${instruction.instruction}')`);
     }
 
 
