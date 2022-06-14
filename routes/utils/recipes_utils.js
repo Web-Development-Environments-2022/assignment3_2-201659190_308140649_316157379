@@ -138,15 +138,42 @@ async function getThreeRandomRecipes(){
     
 }
 
+async function recipePattern(array)
+{
+    return array.map((element) => {
+        const { id, title, readyInMinutes, aggregateLikes, vegetarian, vegan, glutenFree, image } = element;
+        return {
+          id: id,
+          title: title,
+          readyInMinutes: readyInMinutes,
+          aggregateLikes: aggregateLikes,
+          vegetarian: vegetarian,
+          vegan: vegan,
+          glutenFree: glutenFree,
+          image: image,
+        };
+      });
+}
+
+
+async function getInformationBulk(recipes_array){
+    return await axios.get(`${api_domain}/informationBulk?ids=${recipes_array}`, {
+        params: {
+            includeNutrition: false,
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
+}
+
 
 async function getRecipesPreview(recipes_array) {
     if (recipes_array.length == 0){
         return {}
     }
-    let recipes = await getInformationBulk(recipes_array)
-    return previewRecipeDetailsArray(recipes.data)
-
+    let recipes = await getInformationBulk(recipes_array);
+    return recipePattern(recipes.data);
     }
+
 exports.createRecipe= createRecipe
 exports.getRecipesPreview = getRecipesPreview
 exports.addIngredientToRecipe = addIngredientToRecipe
