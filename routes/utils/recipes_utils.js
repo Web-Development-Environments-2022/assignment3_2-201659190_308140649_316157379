@@ -18,6 +18,41 @@ async function getRecipeInformation(recipe_id) {
     });
 }
 
+async function getRandomRecipes() {
+    const res = await axios.get(`${api_domain}/random`, {
+        params: {
+            number : 2,
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
+    return res
+}
+async function getThreeRandomRecipes(){
+    let random = await getRandomRecipes()
+    let a = { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree }
+    a = random.data.recipes[0];
+    return a
+        // id: id,
+        // title: title,
+        // readyInMinutes: readyInMinutes,
+        // image: image,
+        // popularity: aggregateLikes,
+        // vegan: vegan,
+        // vegetarian: vegetarian,
+        // glutenFree: glutenFree,
+        
+    
+
+
+    // let filter_random_pool = random_pool.data.recipes.filter((random) => (random.instructions != ""))
+    // if (filter_random_pool.length < 3) {
+    //     return getThreeRandomRecipes();
+    // }
+    // return extract
+
+      
+
+}
 
 
 async function getRecipeDetails(recipe_id) {
@@ -40,6 +75,7 @@ async function getRecipeDetails(recipe_id) {
 
 
 exports.getRecipeDetails = getRecipeDetails;
+exports.getThreeRandomRecipes = getThreeRandomRecipes;
 
 
 
