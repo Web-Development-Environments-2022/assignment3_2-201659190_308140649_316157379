@@ -102,7 +102,6 @@ async function getRecipeInstructions(recipe_id) {
 
 )
 }
-// get Recipe Details for araay recipes
 async function recipePattern(array)
 {
     return array.map((element) => {
@@ -132,7 +131,7 @@ async function getRecipesPreview(recipes_array) {
     }
     let recipes = await getInformationBulk(recipes_array);
     return recipePattern(recipes.data);
-}
+    }
 
 exports.createRecipe= createRecipe
 exports.getRecipesPreview = getRecipesPreview
