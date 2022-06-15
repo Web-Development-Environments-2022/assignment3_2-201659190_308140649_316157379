@@ -84,7 +84,7 @@ async function getRecipeDetails(recipe_id) {
         
     }
 }
-// get details Recipe title, ingredients, instructions
+// get details Recipe title, ingredients, instructions from API
 async function getRecipeInstructions(recipe_id) {
     let recipe_info = await getAnalyzedRecipeInstructions(recipe_id);
     return  dic_recipe = await Object.assign(recipe_info.data.map((element)  =>  

@@ -35,6 +35,41 @@ router.post('/favorites', async (req,res,next) => {
   }
 })
 
+router.post('/family_recipe',async(req,res,next) =>{
+  try {
+    if( req.body.title == undefined||
+      req.body.imageRecipe == undefined || req.body.readyInMinutes == undefined||
+       req.body.aggregateLikes==undefined || req.body.vegan == undefined|| 
+       req.body.vegetarian == undefined || req.body.glutenFree == undefined || 
+       req.body.ingredients == undefined || req.body.instructions == undefined ||
+       req.body.owner == undefined || req.body.time == undefined){
+        throw {status: 400, message: "one of the argument is not specified."}
+       }
+    const user_id = req.session.user_id;
+    let new_recipe_id =await user_utils.get_new_recipe_id(user_id); 
+    let recipe_details= 
+      {user_id : user_id,
+      recipe_id : new_recipe_id,
+      title : req.body.title,
+      imageRecipe : req.body.imageRecipe,
+      readyInMinutes : req.body.readyInMinutes ,
+      aggregateLikes : req.body.aggregateLikes,
+      vegan : await booliantoBinary(req.body.vegan),
+      vegetarian : await booliantoBinary(req.body.vegetarian),
+      glutenFree : await booliantoBinary(req.body.glutenFree)
+    }
+    let ingredients = req.body.ingredients;
+    let instructions = req.body.instructions;
+    let owner = req.body.owner;
+    let timeRecipe = req.body.time;
+    await create_new_recipe(recipe_details, ingredients,  instructions);
+    await user_utils.setFamilyTable(recipe_details.user_id, recipe_details.recipe_id, owner, timeRecipe);
+    res.status(201).send({message: "family recipe created", success: true });
+  } catch (error) {
+    next(error); 
+  }
+})
+
 router.post('/my_recipes',async(req,res,next) =>{
   try {
     if( req.body.title == undefined||
@@ -67,6 +102,22 @@ router.post('/my_recipes',async(req,res,next) =>{
 })
 
 /**
+ * This path returns the recipes that were created by the logged-in user
+ */
+ router.get('/my_recipes', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    const results = await user_utils.getUserRecipeIngInstFromDB(user_id);
+    results.map((element) => element.instructions = element.instructions.split(","));
+    results.map((element) => element.ingrediants = element.ingrediants.split(","));
+    res.status(200).send(results);
+  } catch(error){
+    next(error); 
+  }
+});
+
+
+/**
  * This path returns the favorites recipes that were saved by the logged-in user
  */
 router.get('/favorites', async (req,res,next) => {
@@ -83,19 +134,18 @@ router.get('/favorites', async (req,res,next) => {
 });
 
 
+
+
 router.get('/family_recipe', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
-    const recipes_id = await user_utils.getFamilyRecipes(user_id);
-    
-    let recipes_id_array = [];
-    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
+    const results = await user_utils.getUserFamilyRecipeIngInstFromDB(user_id);
     res.status(200).send(results);
   } catch(error){
     next(error); 
   }
 });
+
 
 
 
