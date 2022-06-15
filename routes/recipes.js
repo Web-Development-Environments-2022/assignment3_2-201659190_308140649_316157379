@@ -40,15 +40,50 @@ router.get('/random', async (req,res,next) => {
 router.get("/:recipeId", async (req, res, next) => {
   try {
     const recipe_details = await recipes_utils.getRecipeDetails(req.params.recipeId);
-    const recipe_instructions = await recipes_utils.getRecipeInstructions(req.params.recipeId);
-    recipe_instructions.push(recipe_details)
-    res.send(recipe_instructions);
+    // const recipe_integr = await recipes_utils.getRecipeIngredients(req.params.recipeId)
+    // const dict_info = await view_info(recipe_integr)
+    // dict_info["recipePreview"] = recipe_details
+    res.send(recipe_details);
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/:recipeId/details", async (req, res, next) => {
+  try {
+    const recipe_details = await recipes_utils.getRecipeDetails(req.params.recipeId);
+
+    const recipe_integr = await recipes_utils.getRecipeIngredients(req.params.recipeId)
+    const dict_info = await view_info(recipe_integr)
+    dict_info["recipePreview"] = recipe_details
+    res.send(dict_info);
   } catch (error) {
     next(error);
   }
 });
 
+async function view_info(dicts_array) {
+  //Empty dict for output
+  var info = {}
+  var ingredients_dict = {}
+  // Loop over array of input dicts
+  for(var dict in dicts_array){
 
-
+      // Loop over keys in dict
+      if(dict =="extendedIngredients"){
+          for(var d in dicts_array[dict]){
+          
+              var val1 = dicts_array[dict][d]["amount"]
+              var val2 = dicts_array[dict][d]["unit"]
+              var key = dicts_array[dict][d]["nameClean"]
+              ingredients_dict[key] = val1 +" "+ val2
+          }
+      }
+      else{
+          info[dict] = dicts_array[dict]
+      }
+  }
+  info["ingredients"] = ingredients_dict
+  return info
+}
 
 module.exports = router;

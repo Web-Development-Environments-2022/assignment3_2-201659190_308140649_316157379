@@ -80,30 +80,35 @@ async function getRecipeDetails(recipe_id) {
         vegan: vegan,
         vegetarian: vegetarian,
         glutenFree: glutenFree,
-        servings:  servings,
         
     }
 }
-// get details Recipe title, ingredients, instructions
-async function getRecipeInstructions(recipe_id) {
-    let recipe_info = await getAnalyzedRecipeInstructions(recipe_id);
-    return  dic_recipe = await Object.assign(recipe_info.data.map((element)  =>  
-            element.steps.map((ele) =>{ const {step , ingredients} =  ele;
-                return {
-                    step: step,
-                    ingredients: ingredients,
-                    
 
-        } 
+// get Recipe Details for one recipe
+async function getRecipeIngredients(recipe_id) {
+    let recipe_info = await getRecipeInformation(recipe_id);
+    let {extendedIngredients, instructions,servings } = recipe_info.data;
+
+    return {
+        extendedIngredients: extendedIngredients,
+        instructions: instructions,
+        servings:  servings,
+
     }
-
-        )
-    )
-
-)
 }
-async function recipePattern(array)
-{
+// async function info(arrary){
+//     return arrary.map((element) => {
+//         const { unit, amount, name} = element;
+//         return {
+//           unit: unit,
+//           amount: amount,
+//           name: name,
+//         };
+//       });
+//   }
+
+
+async function recipePattern(array){
     return array.map((element) => {
         const { id, title, readyInMinutes, aggregateLikes, vegetarian, vegan, glutenFree, image } = element;
         return {
@@ -139,5 +144,6 @@ exports.addIngredientToRecipe = addIngredientToRecipe
 exports.addInstructionToRecipe = addInstructionToRecipe 
 exports.getRecipeDetails = getRecipeDetails;
 exports.getThreeRandomRecipes = getThreeRandomRecipes;
-exports.getRecipeInstructions = getRecipeInstructions;
+// exports.info = info;
+exports.getRecipeIngredients = getRecipeIngredients
 
