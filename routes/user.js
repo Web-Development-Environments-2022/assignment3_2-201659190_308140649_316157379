@@ -118,9 +118,9 @@ async function addInstructions(id, instructions) {
   await instructions.map((instruction) =>  recipe_utils.addInstructionToRecipe(id, instruction));
 }
 function booliantoBinary(boolean) {
-  if (boolean == "true") {
+  if (boolean == true) {
     return 1;
-  } else if (boolean == "false") {
+  } else if (boolean == false) {
     return 0;
   } else {
     new Error("not valid boolean argument (not 0 or 1)");
