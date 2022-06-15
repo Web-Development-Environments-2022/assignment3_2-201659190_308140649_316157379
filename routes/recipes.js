@@ -39,14 +39,14 @@ router.get('/random', async (req,res,next) => {
 
 router.get("/:recipeId", async (req, res, next) => {
   try {
-    const recipe = await recipes_utils.getRecipeDetails(req.params.recipeId);
-    res.send(recipe);
+    const recipe_details = await recipes_utils.getRecipeDetails(req.params.recipeId);
+    const recipe_instructions = await recipes_utils.getRecipeInstructions(req.params.recipeId);
+    recipe_instructions.push(recipe_details)
+    res.send(recipe_instructions);
   } catch (error) {
     next(error);
   }
 });
-
-
 
 
 module.exports = router;
