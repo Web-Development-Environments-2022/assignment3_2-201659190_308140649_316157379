@@ -140,6 +140,8 @@ router.get('/family_recipe', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
     const results = await user_utils.getUserFamilyRecipeIngInstFromDB(user_id);
+    results.map((element) => element.instructions = element.instructions.split(","));
+    results.map((element) => element.ingrediants = element.ingrediants.split(","));
     res.status(200).send(results);
   } catch(error){
     next(error); 
