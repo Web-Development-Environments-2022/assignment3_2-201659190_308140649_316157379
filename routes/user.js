@@ -178,7 +178,21 @@ function booliantoBinary(boolean) {
     new Error("not valid boolean argument (not 0 or 1)");
   }
 }
-
+/**
+ * This path returns the 3 last watched recipes user
+ */
+ router.get('/recipes', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    let last_watched_array = []
+    const recipes_watchd = await user_utils.getLastRecipesWatched(user_id);
+    recipes_watchd.map((element) => last_watched_array.push(element.recipe_id)); //extracting the recipe ids into array
+    const results = await recipe_utils.getRecipesPreview(last_watched_array);
+    res.status(200).send(results);
+  } catch(error){
+    next(error); 
+  }
+});
 
 
 

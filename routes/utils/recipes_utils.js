@@ -80,31 +80,25 @@ async function getRecipeDetails(recipe_id) {
         vegan: vegan,
         vegetarian: vegetarian,
         glutenFree: glutenFree,
-        servings:  servings,
         
     }
 }
-// get details Recipe title, ingredients, instructions from API
-async function getRecipeInstructions(recipe_id) {
-    let recipe_info = await getAnalyzedRecipeInstructions(recipe_id);
-    return  dic_recipe = await Object.assign(recipe_info.data.map((element)  =>  
-            element.steps.map((ele) =>{ const {step , ingredients} =  ele;
-                return {
-                    step: step,
-                    ingredients: ingredients,
-                    
 
-        } 
+// get Recipe Details for one recipe
+async function getRecipeIngredients(recipe_id) {
+    let recipe_info = await getRecipeInformation(recipe_id);
+    let {extendedIngredients, instructions,servings } = recipe_info.data;
+
+    return {
+        extendedIngredients: extendedIngredients,
+        instructions: instructions,
+        servings:  servings,
+
     }
-
-        )
-    )
-
-)
 }
-async function recipePattern(array)
-{
-    return array.map((element) => {
+// get Recipe Details for array recipes
+async function recipePattern(array_recipes){
+    return array_recipes.map((element) => {
         const { id, title, readyInMinutes, aggregateLikes, vegetarian, vegan, glutenFree, image } = element;
         return {
           id: id,
@@ -118,7 +112,7 @@ async function recipePattern(array)
         };
       });
 }
-
+// get  3 random recipes
 async function getThreeRandomRecipes(){
     let random = await getRandomRecipes();
     return recipePattern(random.data.recipes)
@@ -139,5 +133,5 @@ exports.addIngredientToRecipe = addIngredientToRecipe
 exports.addInstructionToRecipe = addInstructionToRecipe 
 exports.getRecipeDetails = getRecipeDetails;
 exports.getThreeRandomRecipes = getThreeRandomRecipes;
-exports.getRecipeInstructions = getRecipeInstructions;
+exports.getRecipeIngredients = getRecipeIngredients
 
