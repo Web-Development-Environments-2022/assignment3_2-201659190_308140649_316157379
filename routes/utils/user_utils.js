@@ -25,11 +25,14 @@ async function get_new_recipe_id(user_id) {
     let num_user_recipe =  await DButils.execQuery(`select count(recipe_id) as counter from newrecipes where user_id = ${user_id}`)
     return num_user_recipe[0].counter + 1
 }
+
+// return 3 Last Recipes Watched by user
 async function getLastRecipesWatched(user_id){
     return last_recipes = await DButils.execQuery(`select * from seenrecipes where user_id = ${user_id} ORDER BY time DESC LIMIT 3`)
 
 }
 
+// check if user seen recipe and save the recipe_id and time 
 async function update_seen_recipe(user_id, recipe_id){
     let seen_recipe = await DButils.execQuery(`SELECT * FROM seenrecipes WHERE user_id = '${user_id}' AND recipe_id = '${recipe_id}'` );
     if (!seen_recipe)

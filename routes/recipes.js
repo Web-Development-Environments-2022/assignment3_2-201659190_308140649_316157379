@@ -5,9 +5,6 @@ const search_utils = require("./utils/search_utils");
 
 router.get("/", (req, res) => res.send("im here"));
 
-
-
-
 /**
  * This path returns a full details of a recipe by its id
  */
@@ -36,18 +33,22 @@ router.get('/random', async (req,res,next) => {
     }
   });
 
-
+ /**
+ * This path returns details receipe by id
+ */
 router.get("/:recipeId", async (req, res, next) => {
   try {
     const recipe_details = await recipes_utils.getRecipeDetails(req.params.recipeId);
-    // const recipe_integr = await recipes_utils.getRecipeIngredients(req.params.recipeId)
-    // const dict_info = await view_info(recipe_integr)
-    // dict_info["recipePreview"] = recipe_details
     res.send(recipe_details);
-  } catch (error) {
+  } 
+  catch (error) {
     next(error);
   }
 });
+
+/**
+ * This path returns detail extand receipe by id
+ */
 router.get("/:recipeId/details", async (req, res, next) => {
   try {
     const recipe_details = await recipes_utils.getRecipeDetails(req.params.recipeId);
@@ -61,6 +62,9 @@ router.get("/:recipeId/details", async (req, res, next) => {
   }
 });
 
+/**
+ * This helper func returns extendedIngredients, ingredients 
+ */
 async function view_info(dicts_array) {
   //Empty dict for output
   var info = {}
