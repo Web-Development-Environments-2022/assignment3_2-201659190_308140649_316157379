@@ -96,20 +96,9 @@ async function getRecipeIngredients(recipe_id) {
 
     }
 }
-// async function info(arrary){
-//     return arrary.map((element) => {
-//         const { unit, amount, name} = element;
-//         return {
-//           unit: unit,
-//           amount: amount,
-//           name: name,
-//         };
-//       });
-//   }
-
-
-async function recipePattern(array){
-    return array.map((element) => {
+// get Recipe Details for array recipes
+async function recipePattern(array_recipes){
+    return array_recipes.map((element) => {
         const { id, title, readyInMinutes, aggregateLikes, vegetarian, vegan, glutenFree, image } = element;
         return {
           id: id,
@@ -123,7 +112,7 @@ async function recipePattern(array){
         };
       });
 }
-
+// get  3 random recipes
 async function getThreeRandomRecipes(){
     let random = await getRandomRecipes();
     return recipePattern(random.data.recipes)
@@ -144,6 +133,5 @@ exports.addIngredientToRecipe = addIngredientToRecipe
 exports.addInstructionToRecipe = addInstructionToRecipe 
 exports.getRecipeDetails = getRecipeDetails;
 exports.getThreeRandomRecipes = getThreeRandomRecipes;
-// exports.info = info;
 exports.getRecipeIngredients = getRecipeIngredients
 
