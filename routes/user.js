@@ -87,6 +87,7 @@ router.get('/family_recipe', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
     const recipes_id = await user_utils.getFamilyRecipes(user_id);
+    
     let recipes_id_array = [];
     recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
     const results = await recipe_utils.getRecipesPreview(recipes_id_array);
@@ -117,6 +118,7 @@ async function addIngredients(id, ingredients) {
 async function addInstructions(id, instructions) {
   await instructions.map((instruction) =>  recipe_utils.addInstructionToRecipe(id, instruction));
 }
+
 function booliantoBinary(boolean) {
   if (boolean == true) {
     return 1;

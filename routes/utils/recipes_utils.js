@@ -63,7 +63,7 @@ async function addIngredientToRecipe(recipe_id,ingredient) {
 async function addInstructionToRecipe(recipe_id,instruction) {
         await DButils.execQuery(
             `INSERT INTO recipeinstructions (recipe_id, stage, instruction)
-            VALUES ('${recipe_id}', '${instruction.stage}', '${instruction.instruction}')`);
+            VALUES ('${recipe_id}', '${instruction.stage}', '${instruction.instructions}')`);
     }
 
 // get Recipe Details for one recipe
