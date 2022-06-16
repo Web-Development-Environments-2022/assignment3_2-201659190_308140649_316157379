@@ -5,7 +5,7 @@ info:
   version: 1.0.1
 servers:
 # local:
-- url: "http://127.0.0.1:80"
+- url: "http://127.0.0.1:3000"
 # remote:
 # - url: "http://132.73.84.144"
   description: SwaggerHub API Auto Mocking hey
@@ -19,7 +19,7 @@ tags:
 
   
 paths:
-  /auth/register:
+  /Register:
     post:
       tags: 
         - Auth
@@ -37,7 +37,7 @@ paths:
         '400':
           description: bad input parameter 
 
-  /auth/login:
+  /Login:
     post:
       tags:
         - Auth
@@ -69,7 +69,7 @@ paths:
           description: user doesn't exist.
       
       
-  /auth/logout:
+  /Logout:
     post:
       tags:
         - Auth
@@ -81,12 +81,12 @@ paths:
         "401":
           description: logged in is required.
   
-  /recpies:
+  /recipes/random:
     get:
       tags:
         - Recipes
       summary: get main 3 recipes page
-      description: get 3 different random recipes - user isn't logged in
+      description: get 3 different random recipes - for all users
       responses:
         '200':
           description: list of 3 random recipes return succesfuly
@@ -102,7 +102,7 @@ paths:
                 maxItems: 3
                 uniqueItems: true
         '404':
-          description: there are no 3 recipes to return
+          description: not found 3 random recipes
   /users/recipes:
     get:
       tags:
@@ -130,24 +130,24 @@ paths:
                 maxItems: 3
                 uniqueItems: true
         '404':
-          description: there are no  recipes to return
-    post:
-      tags:
-        - Users
-      summary: add recipe to the user's last watched recipe array
-      description: add this recipe to users last watched recipe list 
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/user-recipe'
-        description: sends user name and recipe id to append recipe to the user last watched recipes list
-      responses:
-        "201":
-          description: recipe has been successfuly added to the user's last watched array
-        "404":
-          description: couldnt find username or recipeId
+          description: there are no recipes to return
+    # post:
+    #   tags:
+    #     - Users
+    #   summary: add recipe to the user's last watched recipe array
+    #   description: add this recipe to users last watched recipe list 
+    #   requestBody:
+    #     required: true
+    #     content:
+    #       application/json:
+    #         schema:
+    #           $ref: '#/components/schemas/user-recipe'
+    #     description: sends user name and recipe id to append recipe to the user last watched recipes list
+    #   responses:
+    #     "201":
+    #       description: recipe has been successfuly added to the user's last watched array
+    #     "404":
+    #       description: couldnt find username or recipeId
   /recipes/{recipe_id}:   
     get:
       tags:
@@ -168,13 +168,38 @@ paths:
           content:
             application/json:
               schema:
+                 $ref: '#/components/schemas/recipe_prev'
+        '404':
+          description: no recipe_id
+          
+          
+  /recipes/{recipe_id}/details:   
+    get:
+      tags:
+        - Recipes
+      summary: get detailed recipe page by recipe Id
+      description: get from server a recipe and its details content by recipe Id
+      
+      parameters:
+      - name: recipe_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: the recipe Id of the recipe we would like to display its content
+      responses:
+        '200':
+          description: returns a json object with detail's recipe content
+          content:
+            application/json:
+              schema:
                  $ref: '#/components/schemas/recipe'
         '404':
           description: no recipe_id
 
   
           
-  /users/fav:
+  /users/favorites:
     post:
       tags: 
         - Users
@@ -195,7 +220,7 @@ paths:
               properties:
                 favorite_id:
                   type: integer
-                  description: id of favorite {category_name} to add to user
+                  description: id of favorite to add to user
                   example: 3
       responses:
         '201':
@@ -207,7 +232,7 @@ paths:
       tags: 
         - Users
       summary: get_favorites 
-      description: fetch all favorite {category_name}s of {user_id}. 
+      description: fetch all favorite recipes of {user_id}. 
       parameters:
       - name: user_id
         in: cookie 
@@ -229,7 +254,7 @@ paths:
         "400":
           description: "invalid category name"
       
-  /users/my_recipe:
+  /users/my_recipes:
     post:
       tags: 
       - Users
