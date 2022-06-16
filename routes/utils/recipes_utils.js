@@ -128,8 +128,9 @@ async function getRecipesPreview(recipes_array) {
         return {}
     }
     let recipes = await getInformationBulk(recipes_array);
-    return recipePattern(recipes.data);
+    return await recipePattern(recipes.data);
     }
+
 
 exports.createRecipe= createRecipe
 exports.getRecipesPreview = getRecipesPreview

@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 const recipes_utils = require("./utils/recipes_utils");
 const search_utils = require("./utils/search_utils");
-
+const user_utils = require("./utils/user_utils")
 router.get("/", (req, res) => res.send("im here"));
 
 /**
@@ -51,11 +51,12 @@ router.get("/:recipeId", async (req, res, next) => {
  */
 router.get("/:recipeId/details", async (req, res, next) => {
   try {
+    const user_id = req.session.user_id;
     const recipe_details = await recipes_utils.getRecipeDetails(req.params.recipeId);
-
-    const recipe_integr = await recipes_utils.getRecipeIngredients(req.params.recipeId)
-    const dict_info = await view_info(recipe_integr)
-    dict_info["recipePreview"] = recipe_details
+    const recipe_integr = await recipes_utils.getRecipeIngredients(req.params.recipeId);
+    const dict_info = await view_info(recipe_integr);
+    dict_info["recipePreview"] = recipe_details;
+    await  user_utils.update_seen_recipe(user_id, recipe_details.id);
     res.send(dict_info);
   } catch (error) {
     next(error);

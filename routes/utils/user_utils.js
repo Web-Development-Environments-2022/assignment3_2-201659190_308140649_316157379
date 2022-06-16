@@ -33,11 +33,11 @@ async function getLastRecipesWatched(user_id){
 
 // check if user seen recipe and save the recipe_id and time 
 async function update_seen_recipe(user_id, recipe_id){
-    let seen_recipe = await DButils.execQuery(`SELECT * FROM seenrecipes WHERE user_id = '${user_id}' AND recipe_id = '${recipe_id}'` );
-    if (!seen_recipe)
-        await DButils.execQuery(`insert into seenrecipes values ('${user_id}',${recipe_id})`);
+    let seen_recipe = await DButils.execQuery(`SELECT * FROM seenrecipes WHERE user_id = ${user_id} AND recipe_id = ${recipe_id}` );
+    if (seen_recipe.length === 0)
+        await DButils.execQuery(`insert into seenrecipes (user_id, recipe_id) values (${user_id},${recipe_id})`);
     else{
-        await DButils.execQuery(`UPDATE seenrecipes SET time = CURRENT_TIMESTAMP WHERE user_id = '${user_id}' AND recipe_id = '${recipe_id}'`);
+        await DButils.execQuery(`UPDATE seenrecipes SET time = CURRENT_TIMESTAMP WHERE user_id = ${user_id} AND recipe_id = ${recipe_id}`);
     }
 }
 
