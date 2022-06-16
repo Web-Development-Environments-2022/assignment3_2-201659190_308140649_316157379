@@ -35,6 +35,9 @@ router.post('/favorites', async (req,res,next) => {
   }
 })
 
+/**
+ * This path gets body with family recipe details and save it in the family list of the logged-in user
+ */
 router.post('/family_recipe',async(req,res,next) =>{
   try {
     if( req.body.title == undefined||
@@ -70,6 +73,10 @@ router.post('/family_recipe',async(req,res,next) =>{
   }
 })
 
+
+/**
+ * This path gets body with new recipe details and save it in the my recipt list of the logged-in user
+ */
 router.post('/my_recipes',async(req,res,next) =>{
   try {
     if( req.body.title == undefined||
@@ -134,8 +141,9 @@ router.get('/favorites', async (req,res,next) => {
 });
 
 
-
-
+/**
+ * This path returns the family recipes that were created by the logged-in user
+ */
 router.get('/family_recipe', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
@@ -150,7 +158,7 @@ router.get('/family_recipe', async (req,res,next) => {
 
 
 
-
+// create new recipe in DB
 async function create_new_recipe(recipe, ingredients,  instructions){
   if (recipe.recipe_id == undefined){
     throw{status: 400, message: "cant create recipe"};
@@ -163,14 +171,18 @@ async function create_new_recipe(recipe, ingredients,  instructions){
     throw{status: 400, message: error}
   }
 }
+
+// create ingrediants in DB
 async function addIngredients(id, ingredients) {
   await ingredients.map((ingredient) =>  recipe_utils.addIngredientToRecipe(id, ingredient));
 }
 
+// create instructions in DB
 async function addInstructions(id, instructions) {
   await instructions.map((instruction) =>  recipe_utils.addInstructionToRecipe(id, instruction));
 }
 
+// convert boolean variable to 0 and 1
 function booliantoBinary(boolean) {
   if (boolean == true) {
     return 1;
@@ -181,7 +193,7 @@ function booliantoBinary(boolean) {
   }
 }
 /**
- * This path returns the 3 last watched recipes user
+ * This path returns the 3 recipes last watched by the user
  */
  router.get('/recipes', async (req,res,next) => {
   try{

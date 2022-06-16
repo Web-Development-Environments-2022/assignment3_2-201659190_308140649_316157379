@@ -1,23 +1,25 @@
 
 const DButils = require("./DButils");
 
-
+// return all the recipes that the logged in user created
 async function getRecipeFromDB(id){
     let recipe = await DButils.execQuery(`select * from newrecipes where user_id='${id}'`);
     return recipe;
 }
 
+// insert recipe to the favorite table in DB
 async function markAsFavorite(user_id, recipe_id){
     await DButils.execQuery(`insert into FavoriteRecipes values ('${user_id}',${recipe_id})`);
 }
 
+// return all favorites recipe of the logged in user
 async function getFavoriteRecipes(user_id){
     const fav_recipes_id = await DButils.execQuery(`select recipe_id from FavoriteRecipes where user_id='${user_id}'`);
     return fav_recipes_id;
 }
 
 
-
+// create uniqe id for the recipe in the DB
 async function get_new_recipe_id(user_id) {
     let num_user_recipe =  await DButils.execQuery(`select count(recipe_id) as counter from newrecipes where user_id = ${user_id}`)
     return num_user_recipe[0].counter + 1
@@ -39,6 +41,7 @@ async function update_seen_recipe(user_id, recipe_id){
     }
 }
 
+// return all the detailed recipes of the logged in user
 async function getUserRecipeIngInstFromDB(recipe_id)
 {
     let result = await DButils.execQuery(`select t1.*, concat(group_concat(concat(ing.amount,' ',ing.measure,' ',ing.name))) as ingrediants
@@ -53,7 +56,7 @@ async function getUserRecipeIngInstFromDB(recipe_id)
     return result;
 }
 
-
+// return all the family recipes of the logged in user
 async function getUserFamilyRecipeIngInstFromDB(recipe_id)
 {
     let result = await DButils.execQuery(`select t2.*, fr.owner, fr.recipeTime from
@@ -71,6 +74,7 @@ async function getUserFamilyRecipeIngInstFromDB(recipe_id)
     return result;
 }
 
+// insert the family data into the DB
 async function setFamilyTable(user_id, recipe_id, owner, timeRecipe)
 {
     await DButils.execQuery(`insert into familyrecipes values (${user_id},${recipe_id}, '${owner}','${timeRecipe}')`);

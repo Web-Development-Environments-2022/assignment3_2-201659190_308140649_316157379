@@ -23,6 +23,7 @@ async function getAnalyzedRecipeInstructions(recipe_id) {
         }
     });
 }
+// return 3 random recipes from the spoonacular site
 async function getRandomRecipes() {
     const res = await axios.get(`${api_domain}/random`, {
         params: {
@@ -33,7 +34,7 @@ async function getRandomRecipes() {
     return res
 }
 
-
+// return multiple recipes from the spoonacular site
 async function getInformationBulk(recipes_array){
     return await axios.get(`${api_domain}/informationBulk?ids=${recipes_array}`, {
         params: {
@@ -43,7 +44,7 @@ async function getInformationBulk(recipes_array){
     });
 }
 
-
+// insert new recipe into the DB
 async function createRecipe(recipe){
     isWatchedInt = 0;
     isFavoriteInt = 0;
@@ -55,11 +56,14 @@ async function createRecipe(recipe){
          '${isWatchedInt}', '${isFavoriteInt}', '${recipe.user_id}', '${recipe.recipe_id}')`);
 }
 
+// insert ingrediants to DB
 async function addIngredientToRecipe(recipe_id,ingredient) {
     await DButils.execQuery(
         `INSERT INTO recipeingrediants (recipe_id, name, amount, measure)
         VALUES ('${recipe_id}', '${ingredient.name}', '${ingredient.amount}', '${ingredient.measure}')`);
     }
+
+// insert instructions to DB
 async function addInstructionToRecipe(recipe_id,instruction) {
         await DButils.execQuery(
             `INSERT INTO recipeinstructions (recipe_id, stage, instruction)
@@ -118,7 +122,7 @@ async function getThreeRandomRecipes(){
     return recipePattern(random.data.recipes)
     
 }
-
+// return all preview recipes of the logged in user
 async function getRecipesPreview(recipes_array) {
     if (recipes_array.length == 0){
         return {}

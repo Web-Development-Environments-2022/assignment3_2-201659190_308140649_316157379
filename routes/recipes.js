@@ -34,7 +34,7 @@ router.get('/random', async (req,res,next) => {
   });
 
  /**
- * This path returns details receipe by id
+ * This path returns preview receipe by id
  */
 router.get("/:recipeId", async (req, res, next) => {
   try {
