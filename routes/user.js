@@ -95,7 +95,7 @@ router.post('/my_recipes',async(req,res,next) =>{
       {user_id : user_id,
       recipe_id : new_recipe_id,
       title : req.body.recipe.title,
-      imageRecipe : req.body.recipe.image,
+      image : req.body.recipe.image,
       readyInMinutes : req.body.recipe.timePreperation ,
       aggregateLikes : req.body.recipe.aggregateLikes,
       serving : req.body.recipe.serving,

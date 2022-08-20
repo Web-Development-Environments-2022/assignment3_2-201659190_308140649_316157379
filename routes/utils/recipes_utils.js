@@ -50,9 +50,9 @@ async function createRecipe(recipe){
     isWatchedInt = 0;
     isFavoriteInt = 0;
     await DButils.execQuery(
-        `INSERT INTO newrecipes (title, imageRecipe, readyInMinutes, aggregateLikes, vegan, vegetarian,
+        `INSERT INTO newrecipes (title, image, readyInMinutes, aggregateLikes, vegan, vegetarian,
             glutenFree, isWatched,isFavorite, user_id ,recipe_id)
-        VALUES ('${recipe.title}', '${recipe.imageRecipe}', '${recipe.readyInMinutes}',
+        VALUES ('${recipe.title}', '${recipe.image}', '${recipe.readyInMinutes}',
         '${recipe.aggregateLikes}', '${recipe.vegan}', '${recipe.vegetarian}', '${recipe.glutenFree}',
          '${isWatchedInt}', '${isFavoriteInt}', '${recipe.user_id}', '${recipe.recipe_id}')`);
 }
