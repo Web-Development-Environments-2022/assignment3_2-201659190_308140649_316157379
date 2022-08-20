@@ -79,28 +79,32 @@ router.post('/family_recipe',async(req,res,next) =>{
  */
 router.post('/my_recipes',async(req,res,next) =>{
   try {
-    if( req.body.title == undefined||
-      req.body.imageRecipe == undefined || req.body.readyInMinutes == undefined||
-       req.body.aggregateLikes==undefined || req.body.vegan == undefined|| 
-       req.body.vegetarian == undefined || req.body.glutenFree == undefined || 
-       req.body.ingredients == undefined || req.body.instructions == undefined){
-        throw {status: 400, message: "one of the argument is not specified."}
-       }
+    // if( req.body.title == undefined||
+    //   req.body.imageRecipe == undefined || req.body.readyInMinutes == undefined||
+    //    req.body.aggregateLikes==undefined || req.body.vegan == undefined|| 
+    //    req.body.vegetarian == undefined || req.body.glutenFree == undefined || 
+    //    req.body.ingredients == undefined || req.body.instructions == undefined){
+    //     throw {status: 400, message: "one of the argument is not specified."}
+    //    }
+    if( req.body.recipe == undefined){
+      throw {status: 400, message: "one of the argument is not specified."}
+    }
     const user_id = req.session.user_id;
     let new_recipe_id =await user_utils.get_new_recipe_id(user_id); 
     let recipe_details= 
       {user_id : user_id,
       recipe_id : new_recipe_id,
-      title : req.body.title,
-      imageRecipe : req.body.imageRecipe,
-      readyInMinutes : req.body.readyInMinutes ,
-      aggregateLikes : req.body.aggregateLikes,
-      vegan : await booliantoBinary(req.body.vegan),
-      vegetarian : await booliantoBinary(req.body.vegetarian),
-      glutenFree : await booliantoBinary(req.body.glutenFree)
+      title : req.body.recipe.title,
+      imageRecipe : req.body.recipe.image,
+      readyInMinutes : req.body.recipe.timePreperation ,
+      aggregateLikes : req.body.recipe.aggregateLikes,
+      serving : req.body.recipe.serving,
+      vegan : await booliantoBinary(req.body.recipe.vegan),
+      vegetarian : await booliantoBinary(req.body.recipe.vegetarian),
+      glutenFree : await booliantoBinary(req.body.recipe.glutenFree)
     }
-    let ingredients = req.body.ingredients;
-    let instructions = req.body.instructions;
+    let ingredients = req.body.recipe.ingredients;
+    let instructions = req.body.recipe.instructions;
     await create_new_recipe(recipe_details, ingredients,  instructions) ;
     res.status(201).send({message: "recipe created", success: true });
   } catch (error) {
@@ -182,7 +186,7 @@ async function addInstructions(id, instructions) {
   await instructions.map((instruction) =>  recipe_utils.addInstructionToRecipe(id, instruction));
 }
 
-// convert boolean variable to 0 and 1
+// convert boolean variable to 0 and 1 (mysql dont have false/true)
 function booliantoBinary(boolean) {
   if (boolean == true) {
     return 1;

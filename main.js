@@ -17,6 +17,8 @@ app.use(
     secret: "template", // the encryption key
     duration: 24 * 60 * 60 * 1000, // expired after 20 sec
     activeDuration: 1000 * 60 * 5, // if expiresIn < activeDuration,
+    saveUninitialized: false, //will not save empty session
+    resave: false, // will not reset the cookies for each request
     cookie: {
       httpOnly: false,
     }
@@ -56,13 +58,14 @@ const recipes = require("./routes/recipes");
 const auth = require("./routes/auth");
 
 
+
 //#region cookie middleware
 app.use(function (req, res, next) {
   if (req.session && req.session.user_id) {
     DButils.execQuery("SELECT user_id FROM users")
       .then((users) => {
-        if (users.find((x) => x.user_id === req.session.user_id)) {
-          req.user_id = req.session.user_id;
+        if (users.find((x) => x.user_id === req.body.user_id)) {
+          req.session.user_id = x.user_id;
         }
         next();
       })
@@ -72,6 +75,26 @@ app.use(function (req, res, next) {
   }
 });
 //#endregion
+
+
+
+// //#region cookie middleware
+// app.use(function (req, res, next) {
+
+//   if (req.session && req.session.user_id) {
+//     DButils.execQuery("SELECT user_id FROM users")
+//       .then((users) => {
+//         if (users.find((x) => x.user_id === req.session.user_id)) {
+//           req.user_id = req.session.user_id;
+//         }
+//         next();
+//       })
+//       .catch((error) => next());
+//   } else {
+//     next();
+//   }
+// });
+// //#endregion
 
 // ----> For cheking that our server is alive
 app.get("/alive", (req, res) => res.send("I'm alive"));

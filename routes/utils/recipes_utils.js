@@ -16,13 +16,14 @@ async function getRecipeInformation(recipe_id) {
         }
     });
 }
-async function getAnalyzedRecipeInstructions(recipe_id) {
-    return await axios.get(`${api_domain}/${recipe_id}/analyzedInstructions`,{
-        params:{
-            apiKey: process.env.spooncular_apiKey
-        }
-    });
-}
+
+// async function getAnalyzedRecipeInstructions(recipe_id) {
+//     return await axios.get(`${api_domain}/${recipe_id}/analyzedInstructions`,{
+//         params:{
+//             apiKey: process.env.spooncular_apiKey
+//         }
+//     });
+// }
 // return 3 random recipes from the spoonacular site
 async function getRandomRecipes() {
     const res = await axios.get(`${api_domain}/random`, {
@@ -58,6 +59,7 @@ async function createRecipe(recipe){
 
 // insert ingrediants to DB
 async function addIngredientToRecipe(recipe_id,ingredient) {
+    console.log(ingredient);
     await DButils.execQuery(
         `INSERT INTO recipeingrediants (recipe_id, name, amount, measure)
         VALUES ('${recipe_id}', '${ingredient.name}', '${ingredient.amount}', '${ingredient.measure}')`);
@@ -67,13 +69,14 @@ async function addIngredientToRecipe(recipe_id,ingredient) {
 async function addInstructionToRecipe(recipe_id,instruction) {
         await DButils.execQuery(
             `INSERT INTO recipeinstructions (recipe_id, stage, instruction)
-            VALUES ('${recipe_id}', '${instruction.stage}', '${instruction.instructions}')`);
+            VALUES ('${recipe_id}', '${instruction.stage}', '${instruction.instruction}')`);
     }
 
 // get Recipe Details for one recipe
 async function getRecipeDetails(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
-    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree ,servings} = recipe_info.data;
+    
+    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree ,servings, extendedIngredients, instructions} = recipe_info.data;
 
     return {
         id: id,
@@ -84,6 +87,9 @@ async function getRecipeDetails(recipe_id) {
         vegan: vegan,
         vegetarian: vegetarian,
         glutenFree: glutenFree,
+        servings: servings,
+        extendedIngredients: extendedIngredients,
+        instructions: instructions
         
     }
 }
