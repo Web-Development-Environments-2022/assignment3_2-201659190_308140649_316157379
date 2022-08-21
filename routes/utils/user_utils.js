@@ -28,6 +28,11 @@ async function get_new_recipe_id(user_id) {
 // return 3 Last Recipes Watched by user
 async function getLastRecipesWatched(user_id){
     return last_recipes = await DButils.execQuery(`select * from seenrecipes where user_id = ${user_id} ORDER BY time DESC LIMIT 3`)
+}
+
+// return all Last Recipes Watched by user
+async function getAllRecipesWatched(user_id){
+    return last_recipes = await DButils.execQuery(`select * from seenrecipes where user_id = ${user_id}`)
 
 }
 
@@ -89,3 +94,4 @@ exports.getFavoriteRecipes = getFavoriteRecipes;
 exports.get_new_recipe_id = get_new_recipe_id;
 exports.update_seen_recipe = update_seen_recipe;
 exports.getLastRecipesWatched = getLastRecipesWatched;
+exports.getAllRecipesWatched = getAllRecipesWatched;

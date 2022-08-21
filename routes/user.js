@@ -79,13 +79,6 @@ router.post('/family_recipe',async(req,res,next) =>{
  */
 router.post('/my_recipes',async(req,res,next) =>{
   try {
-    // if( req.body.title == undefined||
-    //   req.body.imageRecipe == undefined || req.body.readyInMinutes == undefined||
-    //    req.body.aggregateLikes==undefined || req.body.vegan == undefined|| 
-    //    req.body.vegetarian == undefined || req.body.glutenFree == undefined || 
-    //    req.body.ingredients == undefined || req.body.instructions == undefined){
-    //     throw {status: 400, message: "one of the argument is not specified."}
-    //    }
     if( req.body.recipe == undefined){
       throw {status: 400, message: "one of the argument is not specified."}
     }
@@ -128,6 +121,8 @@ router.post('/my_recipes',async(req,res,next) =>{
 });
 
 
+
+
 /**
  * This path returns the favorites recipes that were saved by the logged-in user
  */
@@ -139,6 +134,21 @@ router.get('/favorites', async (req,res,next) => {
     recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
     const results = await recipe_utils.getRecipesPreview(recipes_id_array);
     res.status(200).send(results);
+  } catch(error){
+    next(error); 
+  }
+});
+
+/**
+ * This path returns the favorites recipes's ids that were saved by the logged-in user
+ */
+router.get('/favorites/ids', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    const recipes_id = await user_utils.getFavoriteRecipes(user_id);
+    let recipes_id_array = [];
+    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+    res.status(200).send(recipes_id_array);
   } catch(error){
     next(error); 
   }
@@ -207,6 +217,21 @@ function booliantoBinary(boolean) {
     recipes_watchd.map((element) => last_watched_array.push(element.recipe_id)); //extracting the recipe ids into array
     const results = await recipe_utils.getRecipesPreview(last_watched_array);
     res.status(200).send(results);
+  } catch(error){
+    next(error); 
+  }
+});
+
+/**
+ * This path returns the all recipes last watched by the user
+ */
+ router.get('/recipes/ids', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    let recipe_watched_array = []
+    const recipes_watchd = await user_utils.getAllRecipesWatched(user_id);
+    recipes_watchd.map((element) => recipe_watched_array.push(element.recipe_id)); //extracting the recipe ids into array
+    res.status(200).send(recipe_watched_array);
   } catch(error){
     next(error); 
   }

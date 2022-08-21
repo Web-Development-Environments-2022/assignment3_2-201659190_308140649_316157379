@@ -131,6 +131,31 @@ paths:
                 uniqueItems: true
         '404':
           description: there are no recipes to return
+
+  /users/recipes/ids:
+    get:
+      tags:
+        - Users
+      summary: get all last recipes id
+      description: get all last recipes id - user has to be logged in
+      parameters:
+      - name: user_id
+        in: cookie 
+        required: true
+        schema:
+          type: string
+        description: the username cockie 
+      responses:
+        '200':
+          description: list of all last recipes id return succesfuly
+          content:
+            application/json:
+              schema:
+                type: array
+                description: all id of last recipes
+                example: [id1, id2, id3...]
+        '404':
+          description: there are no recipes to return
     # post:
     #   tags:
     #     - Users
@@ -250,10 +275,33 @@ paths:
                   type: object
                   allOf:
                     - $ref: '#/components/schemas/recipe_prev'
-                    
         "400":
           description: "invalid category name"
       
+  /users/favorites/ids:
+    get:
+      tags: 
+        - Users
+      summary: get_favorites ids 
+      description: fetch all favorite recipes id's of {user_id}. 
+      parameters:
+      - name: user_id
+        in: cookie 
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                description: all ids of favorite recipes
+                example: [id1, id2, id3...]
+        "400":
+          description: "no favorite's recipes"
+
   /users/my_recipes:
     post:
       tags: 
@@ -303,6 +351,7 @@ paths:
                  
         "400":
           description: "invalid category name"
+
   /recipes/search:
     get:
       tags: 
